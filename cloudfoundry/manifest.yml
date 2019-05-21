@@ -1,0 +1,6 @@
+applications:
+- memory: 512M
+  name: distsession
+  path: ../target/spring-session-demo-1.0-RELEASE.jar
+  services:
+    - redis-shared
