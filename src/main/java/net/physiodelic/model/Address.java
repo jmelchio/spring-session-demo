@@ -14,6 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address implements Serializable {
+    private static final long serialVersionUID = 6760640046199377121L;
     private String streetOne;
     private String streetTwo;
     private String stateProvince;
