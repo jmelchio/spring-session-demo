@@ -56,11 +56,8 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
 
     logger.log(Level.INFO, "Found serviceInfos: " + StringUtils.collectionToCommaDelimitedString(serviceInfos));
 
-    for (ServiceInfo serviceInfo: serviceInfos) {
-      if (serviceTypeToProfileName.containsKey(serviceInfo.getClass())) {
-        profiles.add(serviceTypeToProfileName.get(serviceInfo.getClass()));
-      }
-    }
+    serviceInfos.stream().filter(serviceInfo -> serviceTypeToProfileName.containsKey(serviceInfo.getClass()))
+        .forEach(serviceInfo -> profiles.add(serviceTypeToProfileName.get(serviceInfo.getClass())));
 
     if (profiles.size() > 1) {
       throw new IllegalStateException(
