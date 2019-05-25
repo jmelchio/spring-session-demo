@@ -17,19 +17,19 @@ import java.util.logging.Logger;
 @Configuration
 @Profile("redis-local")
 public class RedisLocalConfig {
-    private static final Logger logger = Logger.getLogger(RedisLocalConfig.class.toString());
+  private static final Logger logger = Logger.getLogger(RedisLocalConfig.class.toString());
 
-    @Value("${spring.redis.host}")
-    private String redisHost;
+  @Value("${spring.redis.host}")
+  private String redisHost;
 
-    @Bean
-    public RedisConnectionFactory redisConnection() {
-        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
-        logger.log(Level.INFO, "Connection factory host before: " + jedisConnectionFactory.getHostName());
-        jedisConnectionFactory.setHostName(redisHost);
-        logger.log(Level.INFO, "Connection factory host after: " + jedisConnectionFactory.getHostName());
-        return jedisConnectionFactory;
-    }
+  @Bean
+  public RedisConnectionFactory redisConnection() {
+    JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
+    logger.log(Level.INFO, "Connection factory host before: " + jedisConnectionFactory.getHostName());
+    jedisConnectionFactory.setHostName(redisHost);
+    logger.log(Level.INFO, "Connection factory host after: " + jedisConnectionFactory.getHostName());
+    return jedisConnectionFactory;
+  }
 }
 
 // That's All Folks !!

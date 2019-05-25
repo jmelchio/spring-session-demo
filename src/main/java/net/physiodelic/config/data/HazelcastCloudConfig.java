@@ -23,31 +23,31 @@ import org.springframework.session.hazelcast.PrincipalNameExtractor;
 @Configuration
 @Profile("hazelcast-cloud")
 public class HazelcastCloudConfig extends AbstractCloudConfig {
-    private String sysEnv = System.getenv("VCAP_SERVICES");
-    private String url = parseAndGetUrl(sysEnv);
+  private String sysEnv = System.getenv("VCAP_SERVICES");
+  private String url = parseAndGetUrl(sysEnv);
 
-    @Bean
-    public HazelcastInstance hazelcastInstance() {
-        MapAttributeConfig mapAttributeConfig = new MapAttributeConfig()
-                .setName(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE)
-                .setExtractor(PrincipalNameExtractor.class.getName());
+  @Bean
+  public HazelcastInstance hazelcastInstance() {
+    MapAttributeConfig mapAttributeConfig = new MapAttributeConfig()
+        .setName(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE)
+        .setExtractor(PrincipalNameExtractor.class.getName());
 
-        ClientConfig clientConfig = new ClientConfig();
-        ClientNetworkConfig clientNetworkConfig = clientConfig.getNetworkConfig();
-        clientNetworkConfig.addAddress(url).setSmartRouting(true);
-        clientConfig.setNetworkConfig(clientNetworkConfig);
+    ClientConfig clientConfig = new ClientConfig();
+    ClientNetworkConfig clientNetworkConfig = clientConfig.getNetworkConfig();
+    clientNetworkConfig.addAddress(url).setSmartRouting(true);
+    clientConfig.setNetworkConfig(clientNetworkConfig);
 
-        HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
-        hazelcastInstance.getConfig().getMapConfig("spring:session:sessions")
-                .addMapAttributeConfig(mapAttributeConfig)
-                .addMapIndexConfig(new MapIndexConfig(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE, false));
-        return hazelcastInstance;
-    }
+    HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
+    hazelcastInstance.getConfig().getMapConfig("spring:session:sessions")
+        .addMapAttributeConfig(mapAttributeConfig)
+        .addMapIndexConfig(new MapIndexConfig(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE, false));
+    return hazelcastInstance;
+  }
 
-    private String parseAndGetUrl(String envVariable) {
-        JSONObject jsonObject = new JSONObject(envVariable);
-        return jsonObject.getString("host") + ":" + jsonObject.getString("port");
-    }
+  private String parseAndGetUrl(String envVariable) {
+    JSONObject jsonObject = new JSONObject(envVariable);
+    return jsonObject.getString("host") + ":" + jsonObject.getString("port");
+  }
 }
 
 // That's All Folks !!

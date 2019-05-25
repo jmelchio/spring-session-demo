@@ -16,8 +16,8 @@ import org.springframework.session.web.http.HttpSessionStrategy;
 @EnableRedisHttpSession
 public class HttpRedisSessionConfig {
 
-    @Bean
-    public HttpSessionStrategy httpSessionStrategy() {
-        return new HeaderHttpSessionStrategy();
-    }
+  @Bean
+  public HttpSessionStrategy httpSessionStrategy() {
+    return new HeaderHttpSessionStrategy();
+  }
 }

@@ -19,19 +19,19 @@ import org.springframework.session.hazelcast.PrincipalNameExtractor;
 @Profile({"hazelcast-local"})
 public class HazelcastLocalConfig {
 
-    @Bean
-    public HazelcastInstance hazelcastInstance() {
-        MapAttributeConfig mapAttributeConfig = new MapAttributeConfig()
-                .setName(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE)
-                .setExtractor(PrincipalNameExtractor.class.getName());
+  @Bean
+  public HazelcastInstance hazelcastInstance() {
+    MapAttributeConfig mapAttributeConfig = new MapAttributeConfig()
+        .setName(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE)
+        .setExtractor(PrincipalNameExtractor.class.getName());
 
-        Config config = new Config();
+    Config config = new Config();
 
-        config.getMapConfig("spring:session:sessions")
-                .addMapAttributeConfig(mapAttributeConfig)
-                .addMapIndexConfig(new MapIndexConfig(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE, false));
-        return Hazelcast.newHazelcastInstance(config);
-    }
+    config.getMapConfig("spring:session:sessions")
+        .addMapAttributeConfig(mapAttributeConfig)
+        .addMapIndexConfig(new MapIndexConfig(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE, false));
+    return Hazelcast.newHazelcastInstance(config);
+  }
 }
 
 // That's All Folks !!

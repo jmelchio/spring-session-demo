@@ -16,8 +16,8 @@ import org.springframework.session.web.http.HttpSessionStrategy;
 @EnableHazelcastHttpSession
 public class HttpHazelcastSessionConfig {
 
-    @Bean
-    public HttpSessionStrategy httpSessionStrategy() {
-        return new HeaderHttpSessionStrategy();
-    }
+  @Bean
+  public HttpSessionStrategy httpSessionStrategy() {
+    return new HeaderHttpSessionStrategy();
+  }
 }

@@ -19,101 +19,101 @@ import java.util.logging.Logger;
  * Overriding the initialization of the Spring Context.
  */
 public class SpringApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-    private static final Logger logger = Logger.getLogger(SpringApplicationContextInitializer.class.toString());
+  private static final Logger logger = Logger.getLogger(SpringApplicationContextInitializer.class.toString());
 
-    private static final Map<Class<? extends ServiceInfo>, String> serviceTypeToProfileName = new HashMap<>();
-    private static final List<String> validLocalProfiles = Arrays.asList("redis", "hazelcast");
+  private static final Map<Class<? extends ServiceInfo>, String> serviceTypeToProfileName = new HashMap<>();
+  private static final List<String> validLocalProfiles = Arrays.asList("redis", "hazelcast");
 
-    static {
-        serviceTypeToProfileName.put(RedisServiceInfo.class, "redis");
+  static {
+    serviceTypeToProfileName.put(RedisServiceInfo.class, "redis");
+  }
+
+  @Override
+  public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
+    Cloud cloud = getCloud();
+
+    ConfigurableEnvironment configurableEnvironment = configurableApplicationContext.getEnvironment();
+
+    String[] persistenceProfiles = getCloudProfile(cloud);
+    if (persistenceProfiles == null) {
+      persistenceProfiles = Optional.ofNullable(getActiveProfile(configurableEnvironment))
+          .orElse(new String[0]);
     }
 
-    @Override
-    public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-        Cloud cloud = getCloud();
 
-        ConfigurableEnvironment configurableEnvironment = configurableApplicationContext.getEnvironment();
+    Arrays.stream(persistenceProfiles).forEach(configurableEnvironment::addActiveProfile);
+  }
 
-        String[] persistenceProfiles = getCloudProfile(cloud);
-        if (persistenceProfiles == null) {
-            persistenceProfiles = getActiveProfile(configurableEnvironment);
-        }
-
-        for (String persistenceProfile : persistenceProfiles) {
-            configurableEnvironment.addActiveProfile(persistenceProfile);
-        }
+  private String[] getCloudProfile(Cloud cloud) {
+    if (cloud == null) {
+      logger.log(Level.INFO, "No cloud environment found.");
+      return null;
     }
 
-    private String[] getCloudProfile(Cloud cloud) {
-        if (cloud == null) {
-            logger.log(Level.INFO, "No cloud environment found.");
-            return null;
-        }
+    List<String> profiles = new ArrayList<>();
 
-        List<String> profiles = new ArrayList<>();
+    List<ServiceInfo> serviceInfos = cloud.getServiceInfos();
 
-        List<ServiceInfo> serviceInfos = cloud.getServiceInfos();
+    logger.log(Level.INFO, "Found serviceInfos: " + StringUtils.collectionToCommaDelimitedString(serviceInfos));
 
-        logger.log(Level.INFO, "Found serviceInfos: " + StringUtils.collectionToCommaDelimitedString(serviceInfos));
-
-        for (ServiceInfo serviceInfo: serviceInfos) {
-            if (serviceTypeToProfileName.containsKey(serviceInfo.getClass())) {
-                profiles.add(serviceTypeToProfileName.get(serviceInfo.getClass()));
-            }
-        }
-
-        if (profiles.size() > 1) {
-            throw new IllegalStateException(
-                    "Only one service of the following types may be bound to this application: " +
-                            serviceTypeToProfileName.values().toString() + ". " +
-                            "These services are bound to the application: [" +
-                            StringUtils.collectionToCommaDelimitedString(profiles) + "]");
-        }
-
-        if (profiles.size() > 0) {
-            return createProfileNames(profiles.get(0), "cloud");
-        }
-
-        return null;
+    for (ServiceInfo serviceInfo: serviceInfos) {
+      if (serviceTypeToProfileName.containsKey(serviceInfo.getClass())) {
+        profiles.add(serviceTypeToProfileName.get(serviceInfo.getClass()));
+      }
     }
 
-    private Cloud getCloud() {
-        try {
-            CloudFactory cloudFactory = new CloudFactory();
-            return cloudFactory.getCloud();
-        } catch (CloudException ce) {
-            return null;
-        }
+    if (profiles.size() > 1) {
+      throw new IllegalStateException(
+          "Only one service of the following types may be bound to this application: " +
+              serviceTypeToProfileName.values().toString() + ". " +
+              "These services are bound to the application: [" +
+              StringUtils.collectionToCommaDelimitedString(profiles) + "]");
     }
 
-    private String[] getActiveProfile(ConfigurableEnvironment appEnvironment) {
-        List<String> serviceProfiles = new ArrayList<>();
-
-        for (String profile : appEnvironment.getActiveProfiles()) {
-            if (validLocalProfiles.contains(profile)) {
-                serviceProfiles.add(profile);
-            }
-        }
-
-        if (serviceProfiles.size() > 1) {
-            throw new IllegalStateException("Only one active Spring profile may be set among the following: " +
-                    validLocalProfiles.toString() + ". " +
-                    "These profiles are active: [" +
-                    StringUtils.collectionToCommaDelimitedString(serviceProfiles) + "]");
-        }
-
-        if (serviceProfiles.size() > 0) {
-            return createProfileNames(serviceProfiles.get(0), "local");
-        }
-
-        return null;
+    if (profiles.size() > 0) {
+      return createProfileNames(profiles.get(0), "cloud");
     }
 
-    private String[] createProfileNames(String baseName, String suffix) {
-        String[] profileNames = {baseName, baseName + "-" + suffix};
-        logger.info("Setting profile names: " + StringUtils.arrayToCommaDelimitedString(profileNames));
-        return profileNames;
+    return null;
+  }
+
+  private Cloud getCloud() {
+    try {
+      CloudFactory cloudFactory = new CloudFactory();
+      return cloudFactory.getCloud();
+    } catch (CloudException ce) {
+      return null;
     }
+  }
+
+  private String[] getActiveProfile(ConfigurableEnvironment appEnvironment) {
+    List<String> serviceProfiles = new ArrayList<>();
+
+    for (String profile : appEnvironment.getActiveProfiles()) {
+      if (validLocalProfiles.contains(profile)) {
+        serviceProfiles.add(profile);
+      }
+    }
+
+    if (serviceProfiles.size() > 1) {
+      throw new IllegalStateException("Only one active Spring profile may be set among the following: " +
+          validLocalProfiles.toString() + ". " +
+          "These profiles are active: [" +
+          StringUtils.collectionToCommaDelimitedString(serviceProfiles) + "]");
+    }
+
+    if (serviceProfiles.size() > 0) {
+      return createProfileNames(serviceProfiles.get(0), "local");
+    }
+
+    return null;
+  }
+
+  private String[] createProfileNames(String baseName, String suffix) {
+    String[] profileNames = {baseName, baseName + "-" + suffix};
+    logger.info("Setting profile names: " + StringUtils.arrayToCommaDelimitedString(profileNames));
+    return profileNames;
+  }
 }
 
 // That's All Folks !!

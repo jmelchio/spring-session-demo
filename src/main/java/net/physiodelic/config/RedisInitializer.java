@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile({"redis-cloud", "redis-local"})
 public class RedisInitializer extends AbstractHttpSessionApplicationInitializer {
-    public RedisInitializer() {
-        super(HttpRedisSessionConfig.class);
-    }
+  public RedisInitializer() {
+    super(HttpRedisSessionConfig.class);
+  }
 }
 
 // That's All Folks !!

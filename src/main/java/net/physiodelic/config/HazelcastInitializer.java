@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile({"hazelcast-cloud", "hazelcast-local"})
 public class HazelcastInitializer extends AbstractHttpSessionApplicationInitializer {
-    public HazelcastInitializer() {
-        super(HttpHazelcastSessionConfig.class);
-    }
+  public HazelcastInitializer() {
+    super(HttpHazelcastSessionConfig.class);
+  }
 }

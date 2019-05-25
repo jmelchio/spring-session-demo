@@ -15,11 +15,11 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserInfo implements Serializable {
-    private static final long serialVersionUID = -1650463058907821996L;
-    private String firstName;
-    private String lastName;
-    private Date DOB;
-    private Address homeAddress;
+  private static final long serialVersionUID = -1650463058907821996L;
+  private String firstName;
+  private String lastName;
+  private Date DOB;
+  private Address homeAddress;
 }
 
 // That's All Folks !!
