@@ -86,11 +86,8 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
   private String[] getActiveProfile(ConfigurableEnvironment appEnvironment) {
     List<String> serviceProfiles = new ArrayList<>();
 
-    for (String profile : appEnvironment.getActiveProfiles()) {
-      if (validLocalProfiles.contains(profile)) {
-        serviceProfiles.add(profile);
-      }
-    }
+    Arrays.stream(appEnvironment.getActiveProfiles()).filter(validLocalProfiles::contains)
+        .forEach(serviceProfiles::add);
 
     if (serviceProfiles.size() > 1) {
       throw new IllegalStateException("Only one active Spring profile may be set among the following: " +
