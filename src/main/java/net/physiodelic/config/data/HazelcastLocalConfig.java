@@ -1,8 +1,8 @@
 package net.physiodelic.config.data;
 
+import com.hazelcast.config.AttributeConfig;
 import com.hazelcast.config.Config;
-import com.hazelcast.config.MapAttributeConfig;
-import com.hazelcast.config.MapIndexConfig;
+import com.hazelcast.config.IndexConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import org.springframework.context.annotation.Bean;
@@ -21,15 +21,15 @@ public class HazelcastLocalConfig {
 
   @Bean
   public HazelcastInstance hazelcastInstance() {
-    MapAttributeConfig mapAttributeConfig = new MapAttributeConfig()
+    AttributeConfig mapAttributeConfig = new AttributeConfig()
         .setName(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE)
-        .setExtractor(PrincipalNameExtractor.class.getName());
+        .setExtractorClassName(PrincipalNameExtractor.class.getName());
 
     Config config = new Config();
 
     config.getMapConfig("spring:session:sessions")
-        .addMapAttributeConfig(mapAttributeConfig)
-        .addMapIndexConfig(new MapIndexConfig(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE, false));
+        .addAttributeConfig(mapAttributeConfig)
+        .addIndexConfig(new IndexConfig(IndexConfig.DEFAULT_TYPE));
     return Hazelcast.newHazelcastInstance(config);
   }
 }

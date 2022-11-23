@@ -3,8 +3,8 @@ package net.physiodelic.config.data;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;
-import com.hazelcast.config.MapAttributeConfig;
-import com.hazelcast.config.MapIndexConfig;
+import com.hazelcast.config.AttributeConfig;
+import com.hazelcast.config.IndexConfig;
 import com.hazelcast.core.HazelcastInstance;
 import org.json.JSONObject;
 import org.springframework.cloud.config.java.AbstractCloudConfig;
@@ -28,9 +28,9 @@ public class HazelcastCloudConfig extends AbstractCloudConfig {
 
   @Bean
   public HazelcastInstance hazelcastInstance() {
-    MapAttributeConfig mapAttributeConfig = new MapAttributeConfig()
+    AttributeConfig mapAttributeConfig = new AttributeConfig()
         .setName(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE)
-        .setExtractor(PrincipalNameExtractor.class.getName());
+        .setExtractorClassName(PrincipalNameExtractor.class.getName());
 
     ClientConfig clientConfig = new ClientConfig();
     ClientNetworkConfig clientNetworkConfig = clientConfig.getNetworkConfig();
@@ -39,8 +39,8 @@ public class HazelcastCloudConfig extends AbstractCloudConfig {
 
     HazelcastInstance hazelcastInstance = HazelcastClient.newHazelcastClient(clientConfig);
     hazelcastInstance.getConfig().getMapConfig("spring:session:sessions")
-        .addMapAttributeConfig(mapAttributeConfig)
-        .addMapIndexConfig(new MapIndexConfig(HazelcastSessionRepository.PRINCIPAL_NAME_ATTRIBUTE, false));
+        .addAttributeConfig(mapAttributeConfig)
+        .addIndexConfig(new IndexConfig(IndexConfig.DEFAULT_TYPE));
     return hazelcastInstance;
   }
 
