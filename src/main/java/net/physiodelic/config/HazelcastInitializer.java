@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * RedisInitializer to ensure proper session configuration is loaded
  */
 @Component
-@Profile({"hazelcast-cloud", "hazelcast-local"})
+@Profile({ "hazelcast-cloud" })
 public class HazelcastInitializer extends AbstractHttpSessionApplicationInitializer {
   public HazelcastInitializer() {
     super(HttpHazelcastSessionConfig.class);
