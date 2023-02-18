@@ -1,9 +1,9 @@
 package net.physiodelic;
 
+import javax.servlet.http.HttpSession;
 import net.physiodelic.model.SessionItem;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;

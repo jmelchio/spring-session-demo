@@ -1,5 +1,7 @@
 package net.physiodelic.config;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,11 @@ import org.springframework.stereotype.Component;
 public class RedisInitializer extends AbstractHttpSessionApplicationInitializer {
   public RedisInitializer() {
     super(HttpRedisSessionConfig.class);
+  }
+
+  @Override
+  public void onStartup(ServletContext servletContext) throws ServletException {
+    // empty for now
   }
 }
 
