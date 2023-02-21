@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
 import java.util.logging.Level;
@@ -24,10 +26,11 @@ public class RedisLocalConfig {
 
   @Bean
   public RedisConnectionFactory redisConnection() {
-    JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
-    logger.log(Level.INFO, "Connection factory host before: " + jedisConnectionFactory.getHostName());
-    jedisConnectionFactory.setHostName(redisHost);
-    logger.log(Level.INFO, "Connection factory host after: " + jedisConnectionFactory.getHostName());
+    RedisStandaloneConfiguration standaloneConfiguration = new RedisStandaloneConfiguration();
+    standaloneConfiguration.setHostName(redisHost);
+    JedisClientConfiguration clientConfiguration = JedisClientConfiguration.builder().usePooling().build();
+    JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(standaloneConfiguration, clientConfiguration);
+    logger.log(Level.INFO, "Connection factory host: " + jedisConnectionFactory.getHostName());
     return jedisConnectionFactory;
   }
 }
