@@ -3,7 +3,7 @@
 FROM openjdk:latest
 MAINTAINER joris.melchior@gmail.com
 
-COPY spring-session-demo-1.0-RELEASE.jar /opt/java_app/
+COPY target/spring-session-demo-1.0-RELEASE.jar /opt/java_app/
 
 EXPOSE 8080
 WORKDIR /opt/java_app/

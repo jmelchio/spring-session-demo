@@ -22,7 +22,7 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
   private static final Logger logger = Logger.getLogger(SpringApplicationContextInitializer.class.toString());
 
   private static final Map<Class<? extends ServiceInfo>, String> serviceTypeToProfileName = new HashMap<>();
-  private static final List<String> validLocalProfiles = Arrays.asList("redis", "hazelcast");
+  private static final List<String> validLocalProfiles = Collections.singletonList("redis");
 
   static {
     serviceTypeToProfileName.put(RedisServiceInfo.class, "redis");
@@ -62,7 +62,7 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
     if (profiles.size() > 1) {
       throw new IllegalStateException(
           "Only one service of the following types may be bound to this application: " +
-              serviceTypeToProfileName.values().toString() + ". " +
+              serviceTypeToProfileName.values() + ". " +
               "These services are bound to the application: [" +
               StringUtils.collectionToCommaDelimitedString(profiles) + "]");
     }
@@ -91,7 +91,7 @@ public class SpringApplicationContextInitializer implements ApplicationContextIn
 
     if (serviceProfiles.size() > 1) {
       throw new IllegalStateException("Only one active Spring profile may be set among the following: " +
-          validLocalProfiles.toString() + ". " +
+          validLocalProfiles + ". " +
           "These profiles are active: [" +
           StringUtils.collectionToCommaDelimitedString(serviceProfiles) + "]");
     }
