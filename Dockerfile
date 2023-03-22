@@ -1,7 +1,7 @@
 # Attempt to create a docker image with the session application
 
 FROM openjdk:latest
-MAINTAINER joris.melchior@gmail.com
+LABEL net.physiodelic.image.authors="joris.melchior@gmail.com"
 
 COPY target/spring-session-demo-1.0-RELEASE.jar /opt/java_app/
 
