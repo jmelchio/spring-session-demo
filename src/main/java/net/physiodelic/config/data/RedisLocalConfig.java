@@ -6,9 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,10 +27,12 @@ public class RedisLocalConfig {
   public RedisConnectionFactory redisConnection() {
     RedisStandaloneConfiguration standaloneConfiguration = new RedisStandaloneConfiguration();
     standaloneConfiguration.setHostName(redisHost);
-    JedisClientConfiguration clientConfiguration = JedisClientConfiguration.builder().usePooling().build();
-    JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(standaloneConfiguration, clientConfiguration);
-    logger.log(Level.INFO, "Connection factory host: " + jedisConnectionFactory.getHostName());
-    return jedisConnectionFactory;
+
+    LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder().build();
+    LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(standaloneConfiguration,
+        clientConfiguration);
+    logger.log(Level.INFO, "Connection factory host: " + lettuceConnectionFactory.getHostName());
+    return lettuceConnectionFactory;
   }
 }
 
